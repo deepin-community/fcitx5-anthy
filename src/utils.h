@@ -1,0 +1,52 @@
+/*
+ * SPDX-FileCopyrightText: 2005 Takuro Ashie
+ * SPDX-FileCopyrightText: 2017-2017 CSSlayer <wengxt@gmail.com>
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ *
+ */
+#ifndef _FCITX5_ANTHY_UTILS_H_
+#define _FCITX5_ANTHY_UTILS_H_
+
+#include <fcitx-utils/charutils.h>
+#include <fcitx/event.h>
+#include <string>
+
+namespace util {
+
+std::string utf8_string_substr(const std::string &s, size_t start, size_t len);
+
+bool match_key_event(const fcitx::KeyList &list, const fcitx::Key &key,
+                     fcitx::KeyStates ignore_mask = fcitx::KeyStates());
+void split_string(std::string &str, std::vector<std::string> &str_list,
+                  char *delim, int num);
+std::string convert_to_wide(const std::string &str);
+std::string convert_to_half(const std::string &str);
+std::string convert_to_katakana(const std::string &hira, bool half = false);
+
+bool key_is_keypad(const fcitx::Key &key);
+std::string keypad_to_string(const fcitx::KeyEvent &key);
+void launch_program(std::string command);
+
+bool surrounding_get_safe_delta(uint from, uint to, int32_t *delta);
+
+bool surrounding_get_anchor_pos_from_selection(
+    const std::string &surrounding_text, const std::string &selected_text,
+    uint cursor_pos, uint *anchor_pos);
+
+inline char get_ascii_code(const fcitx::Key &key) {
+    auto chr = fcitx::Key::keySymToUnicode(key.sym());
+    if (fcitx::charutils::isprint(chr)) {
+        return chr;
+    }
+    return 0;
+}
+
+inline char get_ascii_code(const fcitx::KeyEvent &event) {
+    return get_ascii_code(event.rawKey());
+}
+
+const fcitx::KeyList &selection_keys();
+} // namespace util
+
+#endif // _FCITX5_ANTHY_UTILS_H_
